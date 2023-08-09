@@ -12,6 +12,10 @@ import { useRouter } from 'next/navigation'
 import Label from '../base/Label'
 import { ExplorerButtons } from './ExplorerButtons'
 import { HistoricalAuctionSheet } from './HistoricalAuctionSheet'
+import React from 'react'
+import { shortenAddress } from '../../utils/shortenAddress'
+import { useEnsAvatar, useEnsName } from 'wagmi'
+
 
 const HistoricalAuction = ({ tokenId }: { tokenId: number }) => {
   const { isMobile } = useIsMobile()
@@ -41,11 +45,31 @@ const HistoricalAuction = ({ tokenId }: { tokenId: number }) => {
     tokenId: BigInt(tokenId),
   })
 
+  const { data: ensName } = useEnsName({
+    address: tokenOwner as `0x${string}`,
+    chainId: 1,
+  })
+
+  const tokenOwnerPretty = React.useMemo(
+    () => (ensName ? ensName : tokenOwner),
+    [ensName, tokenOwner]
+  )
+
   const { winningBid, winningBidder, endTime, bids } =
     useHistoricalAuctionQuery({
       tokenAddress: tokenAddress,
       tokenId: BigInt(tokenId),
     })
+
+  const { data: ensNameWinner } = useEnsName({
+    address: winningBidder as `0x${string}`,
+    chainId: 1,
+  })
+
+  const winningBidderPretty = React.useMemo(
+    () => (ensNameWinner ? ensNameWinner : winningBidder),
+    [ensNameWinner, winningBidder]
+  )
 
   const auctionProps = {
     isMobile,
@@ -91,13 +115,13 @@ const HistoricalAuction = ({ tokenId }: { tokenId: number }) => {
               {Number(winningBid) > 0 ? (
                 <Flex className="z-10 gap-4">
                   <Label variant="row">{`${winningBid} ETH`}</Label>
-                  <Label variant="row">{`${winningBidder}`}</Label>
+                  <Label variant="row">{`${winningBidderPretty}`}</Label>
                 </Flex>
               ) : (
                 <Label
                   variant="row"
                   className="z-10"
-                >{`Allocated to ${tokenOwner}`}</Label>
+                >{`Allocated to ${tokenOwnerPretty}`}</Label>
               )}
             </Flex>
           )}
@@ -116,13 +140,13 @@ const HistoricalAuction = ({ tokenId }: { tokenId: number }) => {
             {Number(winningBid) > 0 ? (
               <Flex className="z-10 gap-4">
                 <Label variant="row">{`${winningBid} ETH`}</Label>
-                <Label variant="row">{`${winningBidder}`}</Label>
+                <Label variant="row">{`${winningBidderPretty}`}</Label>
               </Flex>
             ) : (
               <Label
                 variant="row"
                 className="z-10"
-              >{`Allocated to ${tokenOwner}`}</Label>
+              >{`Allocated to ${tokenOwnerPretty}`}</Label>
             )}
           </Stack>
         </Stack>

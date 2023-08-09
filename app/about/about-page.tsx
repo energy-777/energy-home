@@ -27,13 +27,13 @@ export default function AboutPage() {
     address: treasuryAddress as Hex,
   })
 
-  const { data: latestRoundData } = useContractRead({
-    address: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
-    abi: aggregatorAbi,
-    functionName: 'latestRoundData',
-  })
+  // const { data: latestRoundData } = useContractRead({
+  //   address: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
+  //   abi: aggregatorAbi,
+  //   functionName: 'latestRoundData',
+  // })
 
-  const ethUsd = Number(latestRoundData?.[1].toString().substring(0, 4))
+  // const ethUsd = Number(latestRoundData?.[1].toString().substring(0, 4))
 
   return (
     <Stack className="gap-10 px-4 pt-10 lg:px-10">
@@ -59,7 +59,7 @@ export default function AboutPage() {
           <Stack>
             {tokenSettings ? (
               <H2Heading>{Number(daoDetails.totalSupply) - 1}</H2Heading>
-            ) : null}
+            ) : <div></div> }
             <div className="text-black">Total Supply</div>
           </Stack>
         </Card>
@@ -71,11 +71,11 @@ export default function AboutPage() {
         >
           {`Treasury balance ${Number(data?.formatted).toFixed(3)} ETH`}
         </Label>
-        <Label>
+        {/* <Label>
           {`Treasury balance in USD ${(
             Number(data?.formatted) * ethUsd
           ).toLocaleString()}`}
-        </Label>
+        </Label> */}
       </Flex>
     </Stack>
   )

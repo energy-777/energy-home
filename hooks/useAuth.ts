@@ -2,8 +2,8 @@ import {
   useAccount,
   useBalance,
   useDisconnect,
-  // useEnsAvatar,
-  // useEnsName,
+  useEnsAvatar,
+  useEnsName,
   useNetwork,
   usePublicClient,
   useWalletClient,
@@ -15,12 +15,14 @@ export function useAuth() {
   const { data: walletClient } = useWalletClient()
   const { address, isConnecting, ...rest } = useAccount()
   // ENS related functionality hardcoded out until crosschain ens resolution implemented
-  // const { data: ensName } = useEnsName({
-  //   address: address
-  // })
-  // const { data: ensAvatar } = useEnsAvatar({
-  //   name: address,
-  // })
+  const { data: ensName } = useEnsName({
+    address: address,
+    chainId : 1
+  })
+  const { data: ensAvatar } = useEnsAvatar({
+    name: address,
+    chainId : 1
+  })
   const { disconnect } = useDisconnect()
   const { chain } = useNetwork()
   const { data: balance } = useBalance({ address: address })
@@ -29,9 +31,9 @@ export function useAuth() {
     publicClient,
     walletClient,
     address: address,
-    // ensName: ensName || shortenAddress(address),
-    // ensAvatar: ensAvatar,
-    // displayName: ensName || shortenAddress(address),
+    ensName: ensName || shortenAddress(address),
+    ensAvatar: ensAvatar,
+    displayName: ensName || shortenAddress(address),
     balance: balance,
     loading: isConnecting,
     logout: disconnect,

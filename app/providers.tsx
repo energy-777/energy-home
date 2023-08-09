@@ -118,45 +118,33 @@ function selectChain() {
   }
 }
 
+function selectRpc(chainId) {
+  switch (chainId) {
+    case 1:
+      return `https://eth-mainnet.g.alchemy.com/v2/${ENV.ALCHEMY_KEY}`;
+    case 5:
+      return `https://eth-goerli.g.alchemy.com/v2/${ENV.ALCHEMY_KEY}`;
+    case 999:
+      return 'https://testnet.rpc.zora.co/';
+    case 7777777:
+      return 'https://rpc.zora.co/';
+    case 8453:
+      return 'https://developer-access-mainnet.base.org';
+    default:
+      throw new Error('Invalid chain value');
+  }
+}
+
 const { chains } = configureChains(
-  [selectChain()],
+  [selectChain(), mainnet],
   [
-    ENV.CHAIN === 999
-      ? jsonRpcProvider({
-          rpc: (chain) => ({
-            http: 'https://testnet.rpc.zora.co/',
-          }),
+    jsonRpcProvider({
+            rpc: (chain) => ({
+              http: selectRpc(chain.id),
+            }),
         })
-      : ENV.CHAIN === 7777777
-      ? jsonRpcProvider({
-          rpc: (chain) => ({
-            http: 'https://rpc.zora.co/', // Make sure this URL is correct
-          }),
-        })
-      : ENV.CHAIN === 8453
-      ? jsonRpcProvider({
-          rpc: (chain) => ({
-            http: 'https://developer-access-mainnet.base.org',
-          }),
-        })
-      : (ENV.CHAIN === 1 || ENV.CHAIN === 5)
-      ? alchemyProvider({ apiKey: ENV.ALCHEMY_KEY })
-      : publicProvider(), // Fallback option, adjust as needed
   ]
 );
-
-// const { chains } = configureChains(
-//   [ENV.CHAIN === 1 ? mainnet : (ENV.CHAIN === 5 ? goerli : zoraTestnet)],
-//   [
-//     ENV.CHAIN === 999 // if zoraTestnet, use custom jsonRpcProvider, else use alchemy + public fallback
-//     ? jsonRpcProvider({
-//         rpc: (chain) => ({
-//           http: `https://testnet.rpc.zora.co/`,
-//         })
-//       })
-//     : alchemyProvider({ apiKey: ENV.ALCHEMY_KEY }), publicProvider()
-//   ]
-// )
 
 const config = createConfig(
   getDefaultConfig({

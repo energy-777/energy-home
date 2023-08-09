@@ -15,12 +15,14 @@ type BidderProps = {
 export function Bidder(props: BidderProps) {
   const { data: ensName } = useEnsName({
     address: props.address,
+    chainId: 1
   })
 
   // hardcoded as not available until crosschain ens resolution implemented
-  // const { data: ensAvatar } = useEnsAvatar({
-  //   name: props.address,
-  // })
+  const { data: ensAvatar } = useEnsAvatar({
+    name: props.address,
+    chainId: 1
+  })
 
   return (
     <Flex className="flex-nowrap items-center gap-2">

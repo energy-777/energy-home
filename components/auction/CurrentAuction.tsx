@@ -2,6 +2,7 @@ import { BlurImage } from '@/components/BlurImage'
 import { Flex } from '@/components/base/Flex'
 import { Stack } from '@/components/base/Stack'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { useEnsAvatar, useEnsName } from 'wagmi'
 import {
   useAuctionState,
   useCountdown,
@@ -14,6 +15,8 @@ import { useRouter } from 'next/navigation'
 import Label from '../base/Label'
 import { CurrentAuctionSheet } from './CurrentAuctionSheet'
 import { ExplorerButtons } from './ExplorerButtons'
+import React from 'react'
+import { shortenAddress } from '../../utils/shortenAddress'
 
 const CurrentAuction = ({ tokenId }: { tokenId: number }) => {
   const { isMobile } = useIsMobile()
@@ -54,6 +57,17 @@ const CurrentAuction = ({ tokenId }: { tokenId: number }) => {
   } = useCurrentAuctionQuery({
     tokenAddress: tokenAddress,
   })
+
+  const { data: ensName } = useEnsName({
+    address: winningBidder,
+    chainId: 1,
+  })
+
+  const winningBidderPretty = React.useMemo(
+    () => (ensName ? ensName : shortenAddress(winningBidder)),
+    [ensName, winningBidder]
+  )
+
 
   const { tokenName, tokenImage, tokenOwner } = useHistoricalTokenQuery({
     tokenAddress: tokenAddress,
@@ -116,7 +130,7 @@ const CurrentAuction = ({ tokenId }: { tokenId: number }) => {
                   {Number(winningBid) > 0 ? (
                     <>
                       <Label variant="row">{`${winningBid} ETH`}</Label>
-                      <Label variant="row">{`${winningBidder}`}</Label>
+                      <Label variant="row">{`${winningBidderPretty}`}</Label>
                     </>
                   ) : (
                     <Label variant="row" className="z-10">
@@ -150,7 +164,7 @@ const CurrentAuction = ({ tokenId }: { tokenId: number }) => {
                 {Number(winningBid) > 0 ? (
                   <>
                     <Label variant="row">{`${winningBid} ETH`}</Label>
-                    <Label variant="row">{`${winningBidder}`}</Label>
+                    <Label variant="row">{`${winningBidderPretty}`}</Label>
                   </>
                 ) : (
                   <Label variant="row" className="z-10">

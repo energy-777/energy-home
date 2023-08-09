@@ -16,6 +16,7 @@ type ProposerProps = {
 export function Proposer({ proposer, className, externalLink }: ProposerProps) {
   const { data: ensName } = useEnsName({
     address: proposer,
+    chainId: 1,
   })
 
   const proposerPretty = React.useMemo(
