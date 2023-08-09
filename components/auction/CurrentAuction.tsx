@@ -59,7 +59,7 @@ const CurrentAuction = ({ tokenId }: { tokenId: number }) => {
   })
 
   const { data: ensName } = useEnsName({
-    address: winningBidder,
+    address: winningBidder as `0x${string}`,
     chainId: 1,
   })
 

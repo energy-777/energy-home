@@ -15,7 +15,7 @@ type ProposerProps = {
 
 export function Proposer({ proposer, className, externalLink }: ProposerProps) {
   const { data: ensName } = useEnsName({
-    address: proposer,
+    address: proposer as `0x${string}`,
     chainId: 1,
   })
 
